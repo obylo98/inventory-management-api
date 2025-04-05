@@ -1,0 +1,128 @@
+### Base URL
+@baseUrl = http://localhost:3000/api
+
+### 
+### SUPPLIER ENDPOINTS
+###
+
+### Get all suppliers
+GET {{baseUrl}}/suppliers
+Content-Type: application/json
+
+### Get supplier by ID (replace with actual ID)
+# Note: Run the "Get all suppliers" request first to get an ID to use here
+GET {{baseUrl}}/suppliers/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+
+### Create new supplier
+POST {{baseUrl}}/suppliers
+Content-Type: application/json
+
+{
+  "name": "Test Supplier Company",
+  "contactName": "Test Contact",
+  "email": "test@supplier.com",
+  "phone": "555-999-8888",
+  "address": {
+    "street": "123 Test St",
+    "city": "Test City",
+    "state": "TS",
+    "zipCode": "12345"
+  },
+  "country": "USA",
+  "supplierType": "distributor",
+  "paymentTerms": "Net 30",
+  "isActive": true
+}
+
+### Update supplier (replace with actual ID)
+PUT {{baseUrl}}/suppliers/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+
+{
+  "name": "Updated Test Supplier",
+  "contactName": "Test Contact Updated",
+  "email": "updated@supplier.com",
+  "phone": "555-999-7777",
+  "address": {
+    "street": "456 Test St",
+    "city": "Test City",
+    "state": "TS",
+    "zipCode": "12345"
+  },
+  "country": "USA",
+  "supplierType": "distributor",
+  "paymentTerms": "Net 30",
+  "isActive": true
+}
+
+### Delete supplier (replace with actual ID)
+DELETE {{baseUrl}}/suppliers/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+
+###
+### PRODUCT ENDPOINTS
+###
+
+### Get all products
+GET {{baseUrl}}/products
+Content-Type: application/json
+
+### Get product by ID (replace with actual ID)
+# Note: Run the "Get all products" request first to get an ID to use here
+GET {{baseUrl}}/products/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+
+### Get products by supplier ID (replace with actual supplier ID)
+GET {{baseUrl}}/products/supplier/REPLACE_WITH_ACTUAL_SUPPLIER_ID
+Content-Type: application/json
+
+### Create new product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "name": "Test Product",
+  "description": "This is a test product with at least 10 characters description",
+  "price": 99.99,
+  "stock": 50,
+  "category": "Test Category",
+  "tags": ["test", "sample"],
+  "dimensions": {
+    "height": 10,
+    "width": 20,
+    "depth": 5,
+    "unit": "cm"
+  },
+  "weight": 2.5,
+  "supplierId": "REPLACE_WITH_ACTUAL_SUPPLIER_ID",
+  "isAvailable": true,
+  "imageUrl": "https://example.com/test-product.jpg"
+}
+
+### Update product (replace with actual ID)
+PUT {{baseUrl}}/products/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+
+{
+  "name": "Updated Test Product",
+  "description": "This is an updated test product with at least 10 characters",
+  "price": 89.99,
+  "stock": 45,
+  "category": "Updated Category",
+  "tags": ["test", "updated"],
+  "dimensions": {
+    "height": 11,
+    "width": 21,
+    "depth": 6,
+    "unit": "cm"
+  },
+  "weight": 2.7,
+  "supplierId": "REPLACE_WITH_ACTUAL_SUPPLIER_ID",
+  "isAvailable": true,
+  "imageUrl": "https://example.com/updated-product.jpg"
+}
+
+### Delete product (replace with actual ID)
+DELETE {{baseUrl}}/products/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json 
