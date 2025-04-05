@@ -9,17 +9,10 @@ require("dotenv").config();
 
 const app = express();
 
-// Enhanced CORS configuration for production
+// Simple CORS configuration that allows all origins
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? [
-            process.env.CLIENT_URL || "https://render.com",
-            // Add any additional domains that need access
-            "https://render.com",
-          ]
-        : "*", // In development, allow all origins
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -63,7 +56,8 @@ connectDB()
       console.log(
         `API Documentation available at ${
           process.env.NODE_ENV === "production"
-            ? process.env.APP_URL || "https://inventory-management-api-hi7k.onrender.com"
+            ? process.env.APP_URL ||
+              "https://inventory-management-api-hi7k.onrender.com"
             : `http://localhost:${PORT}`
         }/api-docs`
       );

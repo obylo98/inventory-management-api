@@ -15,7 +15,7 @@
       "description": "Development server"
     },
     {
-      "url": "https://your-render-url.onrender.com",
+      "url": "https://inventory-management-api-hi7k.onrender.com/",
       "description": "Production server"
     }
   ],
