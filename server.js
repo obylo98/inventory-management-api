@@ -63,7 +63,7 @@ connectDB()
       console.log(
         `API Documentation available at ${
           process.env.NODE_ENV === "production"
-            ? process.env.APP_URL || "https://your-render-app.onrender.com"
+            ? process.env.APP_URL || "https://inventory-management-api-hi7k.onrender.com"
             : `http://localhost:${PORT}`
         }/api-docs`
       );
