@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const productController = require("../controllers/productController");
 const { productValidationRules } = require("../middleware/validation");
+const { authenticate, requireAuth } = require("../middleware/auth");
 
 const router = Router();
 
@@ -72,7 +73,15 @@ const router = Router();
  *           type: string
  *           format: date-time
  *           description: Date when the product was added
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
+
+// Apply authentication middleware to all routes
+router.use(authenticate);
 
 /**
  * @swagger
@@ -146,6 +155,8 @@ router.get("/:id", productController.getProductById);
  * /api/products:
  *   post:
  *     summary: Create a new product
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -157,16 +168,25 @@ router.get("/:id", productController.getProductById);
  *         description: Product created successfully
  *       400:
  *         description: Invalid request data
+ *       401:
+ *         description: Authentication required
  *       500:
  *         description: Server error
  */
-router.post("/", productValidationRules, productController.createProduct);
+router.post(
+  "/",
+  requireAuth,
+  productValidationRules,
+  productController.createProduct
+);
 
 /**
  * @swagger
  * /api/products/{id}:
  *   put:
  *     summary: Update a product
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,18 +204,27 @@ router.post("/", productValidationRules, productController.createProduct);
  *         description: Product updated successfully
  *       400:
  *         description: Invalid request data
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Product not found
  *       500:
  *         description: Server error
  */
-router.put("/:id", productValidationRules, productController.updateProduct);
+router.put(
+  "/:id",
+  requireAuth,
+  productValidationRules,
+  productController.updateProduct
+);
 
 /**
  * @swagger
  * /api/products/{id}:
  *   delete:
  *     summary: Delete a product
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -207,11 +236,13 @@ router.put("/:id", productValidationRules, productController.updateProduct);
  *         description: Product deleted successfully
  *       400:
  *         description: Invalid product ID
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Product not found
  *       500:
  *         description: Server error
  */
-router.delete("/:id", productController.deleteProduct);
+router.delete("/:id", requireAuth, productController.deleteProduct);
 
 module.exports = router;

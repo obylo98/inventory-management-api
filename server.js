@@ -3,6 +3,9 @@ const cors = require("cors");
 const { connectDB } = require("./db");
 const productsRouter = require("./routes/products");
 const suppliersRouter = require("./routes/suppliers");
+const authRouter = require("./routes/auth");
+const passport = require("passport");
+const cookieParser = require("cookie-parser");
 const swaggerUi = require("swagger-ui-express");
 // Import the swagger module but only import the swaggerDocument
 const { swaggerDocument } = require("./swagger");
@@ -16,10 +19,15 @@ app.use(
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
 app.use(express.json());
+app.use(cookieParser());
+
+// Initialize Passport
+app.use(passport.initialize());
 
 // We'll no longer generate the swagger.json file during server startup
 // to prevent nodemon's restart loop
@@ -30,6 +38,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Routes
 app.use("/api/products", productsRouter);
 app.use("/api/suppliers", suppliersRouter);
+app.use("/api/auth", authRouter);
 
 // Root route
 app.get("/", (req, res) => {
@@ -39,6 +48,7 @@ app.get("/", (req, res) => {
     endpoints: {
       products: "/api/products",
       suppliers: "/api/suppliers",
+      auth: "/api/auth",
     },
     version: "1.0.0",
     environment: process.env.NODE_ENV || "development",

@@ -38,7 +38,23 @@ const apiInfo = {
       name: "Suppliers",
       description: "Operations about suppliers",
     },
+    {
+      name: "Authentication",
+      description: "Operations for user authentication and authorization",
+    },
   ],
+  // Define global security scheme
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "Enter your JWT token in the format: Bearer {token}",
+      },
+    },
+    // Schemas will be added later
+  },
 };
 
 // Schema definitions
@@ -149,17 +165,7 @@ const schemas = {
   },
   Supplier: {
     type: "object",
-    required: [
-      "name",
-      "contactName",
-      "email",
-      "phone",
-      "address",
-      "country",
-      "supplierType",
-      "paymentTerms",
-      "isActive",
-    ],
+    required: ["name", "contactName", "email", "phone", "address"],
     properties: {
       _id: {
         type: "string",
@@ -198,26 +204,29 @@ const schemas = {
             type: "string",
             example: "CA",
           },
-          zipCode: {
+          zip: {
             type: "string",
             example: "94105",
           },
+          country: {
+            type: "string",
+            example: "United States",
+          },
         },
       },
-      country: {
+      website: {
         type: "string",
-        example: "United States",
-      },
-      supplierType: {
-        type: "string",
-        enum: ["manufacturer", "wholesaler", "distributor", "retailer"],
-        example: "manufacturer",
+        example: "https://techgadgets.com",
       },
       paymentTerms: {
         type: "string",
         example: "Net 30",
       },
-      isActive: {
+      notes: {
+        type: "string",
+        example: "Preferred supplier for electronics",
+      },
+      active: {
         type: "boolean",
         example: true,
       },
@@ -230,6 +239,134 @@ const schemas = {
         type: "string",
         format: "date-time",
         example: "2023-04-16T14:20:00.000Z",
+      },
+    },
+  },
+  User: {
+    type: "object",
+    required: ["name", "email", "password"],
+    properties: {
+      _id: {
+        type: "string",
+        description: "Auto-generated MongoDB ID",
+        example: "60d21b4667d0d8992e610c86",
+      },
+      name: {
+        type: "string",
+        example: "John Doe",
+      },
+      email: {
+        type: "string",
+        format: "email",
+        example: "john.doe@example.com",
+      },
+      password: {
+        type: "string",
+        format: "password",
+        example: "password123",
+        description: "User password (never returned in responses)",
+      },
+      roles: {
+        type: "array",
+        items: {
+          type: "string",
+          enum: ["user", "admin"],
+        },
+        example: ["user"],
+      },
+      createdAt: {
+        type: "string",
+        format: "date-time",
+        example: "2023-04-15T10:30:00.000Z",
+      },
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+        example: "2023-04-16T14:20:00.000Z",
+      },
+    },
+  },
+  Auth: {
+    Login: {
+      type: "object",
+      required: ["email", "password"],
+      properties: {
+        email: {
+          type: "string",
+          format: "email",
+          example: "john.doe@example.com",
+        },
+        password: {
+          type: "string",
+          format: "password",
+          example: "password123",
+        },
+      },
+    },
+    Register: {
+      type: "object",
+      required: ["name", "email", "password"],
+      properties: {
+        name: {
+          type: "string",
+          example: "John Doe",
+        },
+        email: {
+          type: "string",
+          format: "email",
+          example: "john.doe@example.com",
+        },
+        password: {
+          type: "string",
+          format: "password",
+          example: "password123",
+        },
+      },
+    },
+    TokenResponse: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string",
+          example: "Login successful",
+        },
+        user: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "60d21b4667d0d8992e610c86",
+            },
+            name: {
+              type: "string",
+              example: "John Doe",
+            },
+            email: {
+              type: "string",
+              example: "john.doe@example.com",
+            },
+            roles: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+              example: ["user"],
+            },
+          },
+        },
+        token: {
+          type: "string",
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        },
+      },
+    },
+  },
+  Error: {
+    type: "object",
+    properties: {
+      error: {
+        type: "string",
+        example: "Authentication required",
       },
     },
   },
@@ -257,14 +394,25 @@ const productPaths = {
         },
         500: {
           description: "Server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
         },
       },
     },
     post: {
       tags: ["Products"],
-      summary: "Add a new product",
+      summary: "Create a new product",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
       requestBody: {
-        description: "Product object that needs to be added",
         required: true,
         content: {
           "application/json": {
@@ -286,10 +434,34 @@ const productPaths = {
           },
         },
         400: {
-          description: "Invalid input",
+          description: "Invalid request data",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+        401: {
+          description: "Authentication required",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
         },
         500: {
           description: "Server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
         },
       },
     },
@@ -649,10 +821,183 @@ const supplierPaths = {
   },
 };
 
+// Add authentication paths
+const authPaths = {
+  "/api/auth/register": {
+    post: {
+      tags: ["Authentication"],
+      summary: "Register a new user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Auth/Register",
+            },
+          },
+        },
+      },
+      responses: {
+        201: {
+          description: "User registered successfully",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Auth/TokenResponse",
+              },
+            },
+          },
+        },
+        400: {
+          description: "Invalid input data",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+        500: {
+          description: "Server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/auth/login": {
+    post: {
+      tags: ["Authentication"],
+      summary: "Log in a user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Auth/Login",
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Login successful",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Auth/TokenResponse",
+              },
+            },
+          },
+        },
+        400: {
+          description: "Invalid input",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+        401: {
+          description: "Invalid credentials",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+        500: {
+          description: "Server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/auth/logout": {
+    post: {
+      tags: ["Authentication"],
+      summary: "Log out the current user",
+      responses: {
+        200: {
+          description: "Logout successful",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Logout successful",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/auth/me": {
+    get: {
+      tags: ["Authentication"],
+      summary: "Get current user information",
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+      responses: {
+        200: {
+          description: "Current user information",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  user: {
+                    $ref: "#/components/schemas/User",
+                  },
+                },
+              },
+            },
+          },
+        },
+        401: {
+          description: "Not authenticated",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/Error",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 // Combine all paths
 const paths = {
   ...productPaths,
   ...supplierPaths,
+  ...authPaths,
 };
 
 // Combine everything into the swagger document
@@ -660,6 +1005,7 @@ const swaggerDocument = {
   ...apiInfo,
   paths,
   components: {
+    ...apiInfo.components,
     schemas,
   },
 };
