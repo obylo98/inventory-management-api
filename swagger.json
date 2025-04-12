@@ -32,7 +32,9 @@
   "paths": {
     "/api/products": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Get all products",
         "responses": {
           "200": {
@@ -54,7 +56,9 @@
         }
       },
       "post": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Add a new product",
         "requestBody": {
           "description": "Product object that needs to be added",
@@ -79,14 +83,7 @@
             }
           },
           "400": {
-            "description": "Invalid input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Invalid input"
           },
           "500": {
             "description": "Server error"
@@ -96,7 +93,9 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Find product by ID",
         "parameters": [
           {
@@ -132,7 +131,9 @@
         }
       },
       "put": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Update an existing product",
         "parameters": [
           {
@@ -179,7 +180,9 @@
         }
       },
       "delete": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Delete a product",
         "parameters": [
           {
@@ -223,7 +226,9 @@
     },
     "/api/products/supplier/{supplierId}": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Find products by supplier ID",
         "parameters": [
           {
@@ -261,7 +266,9 @@
     },
     "/api/suppliers": {
       "get": {
-        "tags": ["Suppliers"],
+        "tags": [
+          "Suppliers"
+        ],
         "summary": "Get all suppliers",
         "responses": {
           "200": {
@@ -283,7 +290,9 @@
         }
       },
       "post": {
-        "tags": ["Suppliers"],
+        "tags": [
+          "Suppliers"
+        ],
         "summary": "Add a new supplier",
         "requestBody": {
           "description": "Supplier object that needs to be added",
@@ -308,14 +317,7 @@
             }
           },
           "400": {
-            "description": "Invalid input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Invalid input"
           },
           "500": {
             "description": "Server error"
@@ -325,7 +327,9 @@
     },
     "/api/suppliers/{id}": {
       "get": {
-        "tags": ["Suppliers"],
+        "tags": [
+          "Suppliers"
+        ],
         "summary": "Find supplier by ID",
         "parameters": [
           {
@@ -361,7 +365,9 @@
         }
       },
       "put": {
-        "tags": ["Suppliers"],
+        "tags": [
+          "Suppliers"
+        ],
         "summary": "Update an existing supplier",
         "parameters": [
           {
@@ -408,7 +414,9 @@
         }
       },
       "delete": {
-        "tags": ["Suppliers"],
+        "tags": [
+          "Suppliers"
+        ],
         "summary": "Delete a supplier",
         "parameters": [
           {
@@ -501,7 +509,12 @@
             "items": {
               "type": "string"
             },
-            "example": ["headphones", "bluetooth", "wireless", "audio"]
+            "example": [
+              "headphones",
+              "bluetooth",
+              "wireless",
+              "audio"
+            ]
           },
           "dimensions": {
             "type": "object",
@@ -619,7 +632,12 @@
           },
           "supplierType": {
             "type": "string",
-            "enum": ["manufacturer", "wholesaler", "distributor", "retailer"],
+            "enum": [
+              "manufacturer",
+              "wholesaler",
+              "distributor",
+              "retailer"
+            ],
             "example": "manufacturer"
           },
           "paymentTerms": {
@@ -641,40 +659,7 @@
             "example": "2023-04-16T14:20:00.000Z"
           }
         }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "value": {
-                  "type": "string"
-                },
-                "msg": {
-                  "type": "string"
-                },
-                "param": {
-                  "type": "string"
-                },
-                "location": {
-                  "type": "string"
-                }
-              }
-            },
-            "example": [
-              {
-                "value": "",
-                "msg": "Name must be at least 2 characters",
-                "param": "name",
-                "location": "body"
-              }
-            ]
-          }
-        }
       }
     }
   }
-} 
+}

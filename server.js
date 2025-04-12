@@ -4,7 +4,8 @@ const { connectDB } = require("./db");
 const productsRouter = require("./routes/products");
 const suppliersRouter = require("./routes/suppliers");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./swagger.json");
+// Import the swagger module but only import the swaggerDocument
+const { swaggerDocument } = require("./swagger");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +20,9 @@ app.use(
 );
 
 app.use(express.json());
+
+// We'll no longer generate the swagger.json file during server startup
+// to prevent nodemon's restart loop
 
 // Swagger setup
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
