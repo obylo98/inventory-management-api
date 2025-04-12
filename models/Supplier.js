@@ -39,8 +39,11 @@ class Supplier {
    * @returns {Promise<Object>} Created supplier
    */
   static async create(supplierData) {
+    // Remove any client-provided _id, createdAt, or updatedAt fields
+    const { _id, createdAt, updatedAt, ...cleanedData } = supplierData;
+
     const validatedData = {
-      ...supplierData,
+      ...cleanedData,
       createdAt: new Date().toISOString(),
     };
 
@@ -59,8 +62,11 @@ class Supplier {
       throw new Error("Invalid supplier ID");
     }
 
+    // Remove any client-provided _id, createdAt, or updatedAt fields
+    const { _id, createdAt, updatedAt, ...cleanedData } = supplierData;
+
     const validatedData = {
-      ...supplierData,
+      ...cleanedData,
       updatedAt: new Date().toISOString(),
     };
 

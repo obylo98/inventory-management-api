@@ -18,6 +18,8 @@ A comprehensive CRUD API for inventory management using MongoDB, Express, and No
 ```
 ├── server.js           # Main application entry point
 ├── db.js               # Database connection module
+├── swagger.js          # Swagger definition and generation script
+├── generate-swagger.js # Script to generate swagger.json
 ├── controllers/        # Controller functions
 │   ├── productController.js
 │   └── supplierController.js
@@ -29,7 +31,7 @@ A comprehensive CRUD API for inventory management using MongoDB, Express, and No
 ├── routes/             # API route definitions
 │   ├── products.js
 │   └── suppliers.js
-└── swagger.json        # API documentation
+└── swagger.json        # Generated API documentation
 ```
 
 ## Prerequisites
@@ -74,6 +76,18 @@ npm run dev
 ```
 
 ## API Documentation
+
+### Generating Swagger Documentation
+
+After making changes to the API, you should update the Swagger documentation:
+
+```bash
+npm run swagger
+```
+
+This will generate an updated swagger.json file based on the definitions in swagger.js.
+
+### Viewing API Documentation
 
 Once the server is running, you can access the Swagger documentation at:
 
@@ -206,7 +220,7 @@ This application can be deployed to various cloud platforms:
    - **Environment**: Node
    - **Region**: Choose the closest region to your users
    - **Branch**: main (or your preferred branch)
-   - **Build Command**: `npm install`
+   - **Build Command**: `npm install && npm run swagger`
    - **Start Command**: `node server.js`
    - **Plan**: Free (or select a paid plan for production use)
 5. Add the following environment variables:

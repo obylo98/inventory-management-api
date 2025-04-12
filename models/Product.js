@@ -53,8 +53,11 @@ class Product {
    * @returns {Promise<Object>} Created product
    */
   static async create(productData) {
+    // Remove any client-provided _id, createdAt, or updatedAt fields
+    const { _id, createdAt, updatedAt, ...cleanedData } = productData;
+
     const validatedData = {
-      ...productData,
+      ...cleanedData,
       createdAt: new Date().toISOString(),
     };
 
@@ -81,8 +84,11 @@ class Product {
       throw new Error("Invalid product ID");
     }
 
+    // Remove any client-provided _id, createdAt, or updatedAt fields
+    const { _id, createdAt, updatedAt, ...cleanedData } = productData;
+
     const validatedData = {
-      ...productData,
+      ...cleanedData,
       updatedAt: new Date().toISOString(),
     };
 
