@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const supplierController = require("../controllers/supplierController");
 const { supplierValidationRules } = require("../middleware/validation");
+const { authenticate, requireAuth } = require("../middleware/auth");
 
 const router = Router();
 
@@ -16,21 +17,20 @@ const router = Router();
  *         - email
  *         - phone
  *         - address
- *         - country
- *         - isActive
  *       properties:
  *         _id:
  *           type: string
  *           description: Auto-generated MongoDB ID
  *         name:
  *           type: string
- *           description: Company name of the supplier
+ *           description: Company name
  *         contactName:
  *           type: string
- *           description: Primary contact person's name
+ *           description: Name of primary contact
  *         email:
  *           type: string
- *           description: Contact email address
+ *           format: email
+ *           description: Business email address
  *         phone:
  *           type: string
  *           description: Contact phone number
@@ -43,26 +43,40 @@ const router = Router();
  *               type: string
  *             state:
  *               type: string
- *             zipCode:
+ *             zip:
  *               type: string
- *         country:
+ *             country:
+ *               type: string
+ *           description: Business address
+ *         website:
  *           type: string
- *           description: Country of operation
- *         supplierType:
- *           type: string
- *           enum: [manufacturer, wholesaler, distributor, retailer]
- *           description: Type of supplier
+ *           description: Company website URL
  *         paymentTerms:
  *           type: string
- *           description: Payment terms offered by the supplier
- *         isActive:
+ *           description: Payment terms (e.g., "Net 30")
+ *         notes:
+ *           type: string
+ *           description: Additional notes about supplier
+ *         active:
  *           type: boolean
- *           description: Whether supplier is currently active
+ *           description: Whether supplier relationship is active
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Date when the supplier was added
+ *           description: Date when supplier was added
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date when supplier was last updated
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
+
+// Apply authentication middleware to all routes
+router.use(authenticate);
 
 /**
  * @swagger
@@ -115,6 +129,8 @@ router.get("/:id", supplierController.getSupplierById);
  * /api/suppliers:
  *   post:
  *     summary: Create a new supplier
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -126,16 +142,25 @@ router.get("/:id", supplierController.getSupplierById);
  *         description: Supplier created successfully
  *       400:
  *         description: Invalid request data
+ *       401:
+ *         description: Authentication required
  *       500:
  *         description: Server error
  */
-router.post("/", supplierValidationRules, supplierController.createSupplier);
+router.post(
+  "/",
+  requireAuth,
+  supplierValidationRules,
+  supplierController.createSupplier
+);
 
 /**
  * @swagger
  * /api/suppliers/{id}:
  *   put:
  *     summary: Update a supplier
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -153,18 +178,27 @@ router.post("/", supplierValidationRules, supplierController.createSupplier);
  *         description: Supplier updated successfully
  *       400:
  *         description: Invalid request data
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Supplier not found
  *       500:
  *         description: Server error
  */
-router.put("/:id", supplierValidationRules, supplierController.updateSupplier);
+router.put(
+  "/:id",
+  requireAuth,
+  supplierValidationRules,
+  supplierController.updateSupplier
+);
 
 /**
  * @swagger
  * /api/suppliers/{id}:
  *   delete:
  *     summary: Delete a supplier
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -176,11 +210,13 @@ router.put("/:id", supplierValidationRules, supplierController.updateSupplier);
  *         description: Supplier deleted successfully
  *       400:
  *         description: Invalid supplier ID
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Supplier not found
  *       500:
  *         description: Server error
  */
-router.delete("/:id", supplierController.deleteSupplier);
+router.delete("/:id", requireAuth, supplierController.deleteSupplier);
 
 module.exports = router;

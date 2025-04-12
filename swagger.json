@@ -27,8 +27,363 @@
     {
       "name": "Suppliers",
       "description": "Operations about suppliers"
+    },
+    {
+      "name": "Authentication",
+      "description": "Operations for user authentication and authorization"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token in the format: Bearer {token}"
+      }
+    },
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "price",
+          "stock",
+          "category",
+          "isAvailable"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated MongoDB ID",
+            "example": "60d21b4667d0d8992e610c85"
+          },
+          "name": {
+            "type": "string",
+            "example": "Wireless Bluetooth Headphones"
+          },
+          "description": {
+            "type": "string",
+            "example": "Premium noise-cancelling wireless headphones with 30-hour battery life."
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 129.99
+          },
+          "discountPercentage": {
+            "type": "number",
+            "format": "float",
+            "example": 15
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32",
+            "example": 45
+          },
+          "category": {
+            "type": "string",
+            "example": "Electronics"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "headphones",
+              "bluetooth",
+              "wireless",
+              "audio"
+            ]
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "height": {
+                "type": "number",
+                "format": "float",
+                "example": 7.5
+              },
+              "width": {
+                "type": "number",
+                "format": "float",
+                "example": 6.3
+              },
+              "depth": {
+                "type": "number",
+                "format": "float",
+                "example": 3.2
+              },
+              "unit": {
+                "type": "string",
+                "example": "inches"
+              }
+            }
+          },
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "example": 0.68
+          },
+          "supplierId": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c84"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "example": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/images/headphones.jpg"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-15T10:30:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-16T14:20:00.000Z"
+          }
+        }
+      },
+      "Supplier": {
+        "type": "object",
+        "required": [
+          "name",
+          "contactName",
+          "email",
+          "phone",
+          "address"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated MongoDB ID",
+            "example": "60d21b4667d0d8992e610c84"
+          },
+          "name": {
+            "type": "string",
+            "example": "TechGadgets Inc."
+          },
+          "contactName": {
+            "type": "string",
+            "example": "John Smith"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.smith@techgadgets.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "555-123-4567"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string",
+                "example": "123 Tech Boulevard"
+              },
+              "city": {
+                "type": "string",
+                "example": "San Francisco"
+              },
+              "state": {
+                "type": "string",
+                "example": "CA"
+              },
+              "zip": {
+                "type": "string",
+                "example": "94105"
+              },
+              "country": {
+                "type": "string",
+                "example": "United States"
+              }
+            }
+          },
+          "website": {
+            "type": "string",
+            "example": "https://techgadgets.com"
+          },
+          "paymentTerms": {
+            "type": "string",
+            "example": "Net 30"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Preferred supplier for electronics"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-15T10:30:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-16T14:20:00.000Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated MongoDB ID",
+            "example": "60d21b4667d0d8992e610c86"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.doe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password123",
+            "description": "User password (never returned in responses)"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "user",
+                "admin"
+              ]
+            },
+            "example": [
+              "user"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-15T10:30:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-04-16T14:20:00.000Z"
+          }
+        }
+      },
+      "Auth": {
+        "Login": {
+          "type": "object",
+          "required": [
+            "email",
+            "password"
+          ],
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "john.doe@example.com"
+            },
+            "password": {
+              "type": "string",
+              "format": "password",
+              "example": "password123"
+            }
+          }
+        },
+        "Register": {
+          "type": "object",
+          "required": [
+            "name",
+            "email",
+            "password"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "John Doe"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "john.doe@example.com"
+            },
+            "password": {
+              "type": "string",
+              "format": "password",
+              "example": "password123"
+            }
+          }
+        },
+        "TokenResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Login successful"
+            },
+            "user": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "60d21b4667d0d8992e610c86"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john.doe@example.com"
+                },
+                "roles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "user"
+                  ]
+                }
+              }
+            },
+            "token": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Authentication required"
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/api/products": {
       "get": {
@@ -51,7 +406,14 @@
             }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -59,9 +421,13 @@
         "tags": [
           "Products"
         ],
-        "summary": "Add a new product",
+        "summary": "Create a new product",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
-          "description": "Product object that needs to be added",
           "required": true,
           "content": {
             "application/json": {
@@ -83,10 +449,34 @@
             }
           },
           "400": {
-            "description": "Invalid input"
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -457,206 +847,179 @@
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Product": {
-        "type": "object",
-        "required": [
-          "name",
-          "description",
-          "price",
-          "stock",
-          "category",
-          "isAvailable"
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
         ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated MongoDB ID",
-            "example": "60d21b4667d0d8992e610c85"
-          },
-          "name": {
-            "type": "string",
-            "example": "Wireless Bluetooth Headphones"
-          },
-          "description": {
-            "type": "string",
-            "example": "Premium noise-cancelling wireless headphones with 30-hour battery life."
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "example": 129.99
-          },
-          "discountPercentage": {
-            "type": "number",
-            "format": "float",
-            "example": 15
-          },
-          "stock": {
-            "type": "integer",
-            "format": "int32",
-            "example": 45
-          },
-          "category": {
-            "type": "string",
-            "example": "Electronics"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "headphones",
-              "bluetooth",
-              "wireless",
-              "audio"
-            ]
-          },
-          "dimensions": {
-            "type": "object",
-            "properties": {
-              "height": {
-                "type": "number",
-                "format": "float",
-                "example": 7.5
-              },
-              "width": {
-                "type": "number",
-                "format": "float",
-                "example": 6.3
-              },
-              "depth": {
-                "type": "number",
-                "format": "float",
-                "example": 3.2
-              },
-              "unit": {
-                "type": "string",
-                "example": "inches"
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Auth/Register"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth/TokenResponse"
+                }
               }
             }
           },
-          "weight": {
-            "type": "number",
-            "format": "float",
-            "example": 0.68
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
-          "supplierId": {
-            "type": "string",
-            "example": "60d21b4667d0d8992e610c84"
-          },
-          "isAvailable": {
-            "type": "boolean",
-            "example": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "example": "https://example.com/images/headphones.jpg"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-04-15T10:30:00.000Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-04-16T14:20:00.000Z"
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
-      },
-      "Supplier": {
-        "type": "object",
-        "required": [
-          "name",
-          "contactName",
-          "email",
-          "phone",
-          "address",
-          "country",
-          "supplierType",
-          "paymentTerms",
-          "isActive"
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
         ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated MongoDB ID",
-            "example": "60d21b4667d0d8992e610c84"
-          },
-          "name": {
-            "type": "string",
-            "example": "TechGadgets Inc."
-          },
-          "contactName": {
-            "type": "string",
-            "example": "John Smith"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "example": "john.smith@techgadgets.com"
-          },
-          "phone": {
-            "type": "string",
-            "example": "555-123-4567"
-          },
-          "address": {
-            "type": "object",
-            "properties": {
-              "street": {
-                "type": "string",
-                "example": "123 Tech Boulevard"
-              },
-              "city": {
-                "type": "string",
-                "example": "San Francisco"
-              },
-              "state": {
-                "type": "string",
-                "example": "CA"
-              },
-              "zipCode": {
-                "type": "string",
-                "example": "94105"
+        "summary": "Log in a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Auth/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth/TokenResponse"
+                }
               }
             }
           },
-          "country": {
-            "type": "string",
-            "example": "United States"
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
-          "supplierType": {
-            "type": "string",
-            "enum": [
-              "manufacturer",
-              "wholesaler",
-              "distributor",
-              "retailer"
-            ],
-            "example": "manufacturer"
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
-          "paymentTerms": {
-            "type": "string",
-            "example": "Net 30"
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log out the current user",
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logout successful"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get current user information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
           },
-          "isActive": {
-            "type": "boolean",
-            "example": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-04-15T10:30:00.000Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-04-16T14:20:00.000Z"
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
